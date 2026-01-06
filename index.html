@@ -1,0 +1,2244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Booking Futsal</title>
+    <style>
+        /* RESET & BASE STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* HEADER STYLES */
+        header {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: #ff6b6b;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        .nav-menu li {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-menu li:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-menu li.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ff6b6b;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* BUTTON STYLES */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #4ecdc4;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #26d0ce;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid #4ecdc4;
+            color: #4ecdc4;
+        }
+
+        .btn-outline:hover {
+            background-color: #4ecdc4;
+            color: white;
+        }
+
+        .btn-success {
+            background-color: #1dd1a1;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #10ac84;
+        }
+
+        .btn-warning {
+            background-color: #feca57;
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background-color: #ff9f43;
+        }
+
+        .btn-danger {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #ee5253;
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+
+        /* UTILITY CLASSES */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        /* CARD STYLES */
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .card h2 {
+            color: #2d3436;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f2f6;
+            font-size: 22px;
+        }
+
+        /* FORM STYLES */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2d3436;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #dfe6e9;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* TIME SLOTS */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .time-slot {
+            padding: 10px;
+            text-align: center;
+            background-color: #1dd1a1;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .time-slot:hover {
+            background-color: #10ac84;
+            transform: translateY(-2px);
+        }
+
+        .time-slot.selected {
+            background-color: #4ecdc4;
+            border-color: #26d0ce;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(78, 205, 196, 0.3);
+        }
+
+        .time-slot.booked {
+            background-color: #ff6b6b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* PITCH CARDS */
+        .pitch-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .pitch-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+
+        .pitch-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .pitch-image {
+            height: 160px;
+            background: linear-gradient(45deg, #1a2980, #26d0ce);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .pitch-info {
+            padding: 18px;
+        }
+
+        .pitch-info h3 {
+            color: #2d3436;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .pitch-info p {
+            color: #636e72;
+            margin-bottom: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .price {
+            color: #ff6b6b;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 12px 0;
+        }
+
+        /* BOOKING CARDS */
+        .booking-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .booking-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #4ecdc4;
+            transition: transform 0.3s;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* STATUS BADGES */
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .status.confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status.cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.paid {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status.unpaid {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* ALERT MESSAGES */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* WELCOME SECTION */
+        .welcome-section {
+            text-align: center;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .welcome-section h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .welcome-section p {
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto 20px;
+            opacity: 0.9;
+        }
+
+        /* USER PANEL */
+        .user-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .user-details h3 {
+            color: #2d3436;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        /* TABLE STYLES */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+
+        th {
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* PAYMENT METHODS */
+        .payment-methods {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .payment-method {
+            padding: 10px 15px;
+            border: 2px solid #dfe6e9;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .payment-method:hover {
+            border-color: #4ecdc4;
+            background-color: #f8f9fa;
+        }
+
+        .payment-method.selected {
+            border-color: #1dd1a1;
+            background-color: #d4edda;
+        }
+
+        .payment-icon {
+            font-size: 18px;
+        }
+
+        /* FOOTER */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            color: #636e72;
+            border-top: 1px solid #dfe6e9;
+            background: white;
+            border-radius: 10px 10px 0 0;
+            font-size: 14px;
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card h3 {
+            color: #2d3436;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .stat-card .number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff6b6b;
+        }
+
+        /* LOADING SPINNER */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4ecdc4;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            }
+            
+            .pitch-list, .booking-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-methods {
+                flex-direction: column;
+            }
+            
+            .payment-method {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .welcome-section {
+                padding: 30px 20px;
+            }
+            
+            .welcome-section h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <h1>⚽ <span>Futsal</span>Pro</h1>
+            </div>
+            <ul class="nav-menu">
+                <li id="nav-home" class="active">🏠 Beranda</li>
+                <li id="nav-pitches">⚽ Lapangan</li>
+                <li id="nav-bookings">📋 Booking Saya</li>
+                <li id="nav-new-booking">➕ Booking Baru</li>
+                <li id="nav-admin" class="hidden">👑 Admin</li>
+            </ul>
+            <div class="auth-buttons">
+                <button id="btn-login" class="btn btn-primary">Login</button>
+                <button id="btn-logout" class="btn btn-outline hidden">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <!-- LOGIN SECTION -->
+        <div id="login-section" class="card">
+            <h2>🔐 Login ke Akun Anda</h2>
+            <div id="login-message" class="alert hidden"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">📧 Email</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="contoh: user@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">🔑 Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="masukkan password" required>
+                </div>
+                <button type="submit" class="btn btn-primary mb-20">Login</button>
+                <button type="button" id="btn-show-register" class="btn btn-outline">Buat Akun Baru</button>
+            </form>
+        </div>
+
+        <!-- REGISTER SECTION -->
+        <div id="register-section" class="card hidden">
+            <h2>📝 Daftar Akun Baru</h2>
+            <div id="register-message" class="alert hidden"></div>
+            <form id="register-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="register-name">👤 Nama Lengkap</label>
+                        <input type="text" id="register-name" class="form-control" placeholder="Nama lengkap" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-phone">📱 Nomor Telepon</label>
+                        <input type="tel" id="register-phone" class="form-control" placeholder="081234567890" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">📧 Email</label>
+                    <input type="email" id="register-email" class="form-control" placeholder="email@contoh.com" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="register-password">🔑 Password</label>
+                        <input type="password" id="register-password" class="form-control" placeholder="minimal 6 karakter" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password">🔑 Konfirmasi Password</label>
+                        <input type="password" id="register-confirm-password" class="form-control" placeholder="ulangi password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Daftar</button>
+                <button type="button" id="btn-show-login" class="btn btn-outline">Sudah Punya Akun?</button>
+            </form>
+        </div>
+
+        <!-- MAIN CONTENT (setelah login) -->
+        <div id="main-content" class="hidden">
+            <!-- WELCOME SECTION -->
+            <div class="welcome-section">
+                <h2>Selamat Datang di Futsal<span>Pro</span>!</h2>
+                <p>Booking lapangan futsal favorit Anda dengan mudah dan cepat. Sistem booking modern dengan database terpusat.</p>
+                <button id="btn-new-booking" class="btn btn-primary" style="font-size: 16px; padding: 12px 25px;">
+                    🎯 Booking Lapangan Sekarang
+                </button>
+            </div>
+
+            <!-- USER PANEL -->
+            <div class="user-panel">
+                <div class="user-info">
+                    <div class="user-details">
+                        <h3>👋 Halo, <span id="user-display-name">Pengguna</span>! 
+                            <span id="user-role-badge" class="status hidden"></span>
+                        </h3>
+                        <p>📧 <span id="user-display-email">-</span> | 📱 <span id="user-display-phone">-</span></p>
+                    </div>
+                    <div>
+                        <button id="btn-quick-booking" class="btn btn-secondary">⚡ Booking Cepat</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HOME SECTION -->
+            <div id="home-section">
+                <div class="card">
+                    <h2>⚽ Lapangan Tersedia</h2>
+                    <div class="pitch-list" id="available-pitches">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>📊 Booking Terbaru</h2>
+                    <div class="booking-grid" id="recent-bookings">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PITCHES SECTION -->
+            <div id="pitches-section" class="hidden">
+                <div class="card">
+                    <h2>🏟️ Semua Lapangan</h2>
+                    <div class="pitch-list" id="all-pitches">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOOKINGS SECTION -->
+            <div id="bookings-section" class="hidden">
+                <div class="card">
+                    <h2>📋 Riwayat Booking Saya</h2>
+                    <div id="bookings-message" class="alert hidden"></div>
+                    <div class="booking-grid" id="user-bookings">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW BOOKING SECTION -->
+            <div id="new-booking-section" class="hidden">
+                <div class="card">
+                    <h2>➕ Buat Booking Baru</h2>
+                    <div id="booking-message" class="alert hidden"></div>
+                    <form id="booking-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="booking-pitch">🏟️ Pilih Lapangan</label>
+                                <select id="booking-pitch" class="form-control" required>
+                                    <option value="">-- Pilih Lapangan --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="booking-date">📅 Tanggal Booking</label>
+                                <input type="date" id="booking-date" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>⏰ Pilih Waktu Mulai</label>
+                            <div class="time-slots" id="time-slots">
+                                <div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666;">
+                                    Pilih lapangan dan tanggal terlebih dahulu
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="booking-duration">⏱️ Durasi (jam)</label>
+                                <select id="booking-duration" class="form-control" required>
+                                    <option value="1">1 Jam</option>
+                                    <option value="2" selected>2 Jam</option>
+                                    <option value="3">3 Jam</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="booking-total">💰 Total Biaya</label>
+                                <input type="text" id="booking-total" class="form-control" readonly value="Rp 0">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>💳 Metode Pembayaran</label>
+                            <div class="payment-methods">
+                                <div class="payment-method" data-method="cash">
+                                    <span class="payment-icon">💵</span>
+                                    <span>Cash di Tempat</span>
+                                </div>
+                                <div class="payment-method" data-method="transfer">
+                                    <span class="payment-icon">🏦</span>
+                                    <span>Transfer Bank</span>
+                                </div>
+                                <div class="payment-method" data-method="qris">
+                                    <span class="payment-icon">📱</span>
+                                    <span>QRIS</span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="payment-method" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">✅ Konfirmasi Booking</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ADMIN SECTION -->
+            <div id="admin-section" class="hidden">
+                <div class="card">
+                    <h2>👑 Dashboard Admin</h2>
+                    <div id="admin-message" class="alert hidden"></div>
+                    
+                    <!-- STATS -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Booking</h3>
+                            <div class="number" id="total-bookings">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Pendapatan Hari Ini</h3>
+                            <div class="number" id="today-revenue">Rp 0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Booking Aktif</h3>
+                            <div class="number" id="active-bookings">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Pengguna</h3>
+                            <div class="number" id="total-users">0</div>
+                        </div>
+                    </div>
+
+                    <!-- ALL BOOKINGS TABLE -->
+                    <div class="table-container">
+                        <h3>📋 Semua Booking</h3>
+                        <table id="all-bookings-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Pelanggan</th>
+                                    <th>Lapangan</th>
+                                    <th>Tanggal</th>
+                                    <th>Waktu</th>
+                                    <th>Durasi</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Pembayaran</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="10" style="text-align: center; padding: 30px;">
+                                        <div class="loading">
+                                            <div class="loading-spinner"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- ALL USERS TABLE -->
+                    <div class="table-container mt-20">
+                        <h3>👥 Semua Pengguna</h3>
+                        <table id="all-users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>Telepon</th>
+                                    <th>Role</th>
+                                    <th>Total Booking</th>
+                                    <th>Tanggal Daftar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 30px;">
+                                        <div class="loading">
+                                            <div class="loading-spinner"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>© 2026 FutsalPro - Sistem Booking Lapangan Futsal</p>
+            <p style="margin-top: 10px; font-size: 13px; color: #95a5a6;">
+            </p>
+        </div>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        // ==================== DATABASE SIMULASI ====================
+        class Database {
+            constructor() {
+                this.STORAGE_KEY = 'futsalpro_db_v3';
+                this.initDatabase();
+            }
+
+            initDatabase() {
+                let db = this.getDatabase();
+                
+                if (!db) {
+                    db = {
+                        users: [
+                            {
+                                id: 1,
+                                name: "Admin FutsalPro",
+                                email: "admin@futsal.com",
+                                phone: "081234567890",
+                                password: "admin123",
+                                role: "admin",
+                                createdAt: new Date().toISOString()
+                            },
+                            {
+                                id: 2,
+                                name: "Budi Santoso",
+                                email: "budi@email.com",
+                                phone: "081234567891",
+                                password: "password123",
+                                role: "user",
+                                createdAt: new Date().toISOString()
+                            },
+                            {
+                                id: 3,
+                                name: "Siti Rahayu",
+                                email: "siti@email.com",
+                                phone: "081234567892",
+                                password: "password123",
+                                role: "user",
+                                createdAt: new Date().toISOString()
+                            }
+                             {
+                                id: 4,
+                                name: "riski",
+                                email: "riski@email.com",
+                                phone: "08123456789",
+                                password: "password123",
+                                role: "user",
+                                createdAt: new Date().toISOString()
+                            }
+                        ],
+                        pitches: [
+                            {
+                                id: 1,
+                                name: "Lapangan A",
+                                type: "Vinyl",
+                                pricePerHour: 150000,
+                                description: "Lapangan standar nasional dengan rumput sintetis premium",
+                                facilities: ["Pencahayaan LED", "Tribun penonton", "Rumput sintetis"],
+                                status: "active",
+                                bookedSlots: {},
+                                createdAt: new Date().toISOString()
+                            },
+                            {
+                                id: 2,
+                                name: "Lapangan B",
+                                type: "Parquet",
+                                pricePerHour: 120000,
+                                description: "Lapangan dengan lantai parquet untuk permainan nyaman",
+                                facilities: ["Pencahayaan standar", "Parkir luas", "Kamar ganti"],
+                                status: "active",
+                                bookedSlots: {},
+                                createdAt: new Date().toISOString()
+                            },
+                            {
+                                id: 3,
+                                name: "Lapangan C",
+                                type: "Turf",
+                                pricePerHour: 100000,
+                                description: "Lapangan ekonomis dengan kualitas terjamin",
+                                facilities: ["Pencahayaan standar", "Toilet", "Musholla"],
+                                status: "active",
+                                bookedSlots: {},
+                                createdAt: new Date().toISOString()
+                            },
+                            {
+                                id: 4,
+                                name: "Lapangan VIP",
+                                type: "Vinyl Premium",
+                                pricePerHour: 200000,
+                                description: "Lapangan premium dengan fasilitas lengkap",
+                                facilities: ["AC ruang ganti", "Cafe", "WiFi", "Pencahayaan profesional"],
+                                status: "active",
+                                bookedSlots: {},
+                                createdAt: new Date().toISOString()
+                            }
+                        ],
+                        bookings: [],
+                        payments: []
+                    };
+
+                    // Tambah dummy bookings
+                    const today = new Date();
+                    for (let i = 1; i <= 8; i++) {
+                        const bookingDate = new Date(today);
+                        bookingDate.setDate(bookingDate.getDate() + i);
+                        const dateStr = bookingDate.toISOString().split('T')[0];
+                        
+                        const user = db.users[i % db.users.length];
+                        const pitch = db.pitches[i % db.pitches.length];
+                        
+                        const booking = {
+                            id: i,
+                            userId: user.id,
+                            userName: user.name,
+                            pitchId: pitch.id,
+                            pitchName: pitch.name,
+                            date: dateStr,
+                            startTime: `${8 + (i % 10)}:00`,
+                            duration: 2,
+                            totalPrice: pitch.pricePerHour * 2,
+                            paymentMethod: ["cash", "transfer", "qris"][i % 3],
+                            paymentStatus: i % 3 === 0 ? "pending" : "paid",
+                            bookingStatus: ["pending", "confirmed", "completed"][i % 3],
+                            createdAt: new Date().toISOString()
+                        };
+
+                        db.bookings.push(booking);
+                        
+                        // Tambah booked slot
+                        const startHour = parseInt(booking.startTime.split(':')[0]);
+                        if (!pitch.bookedSlots[dateStr]) {
+                            pitch.bookedSlots[dateStr] = [];
+                        }
+                        pitch.bookedSlots[dateStr].push(`${startHour}-${startHour + booking.duration}`);
+                    }
+
+                    this.saveDatabase(db);
+                }
+            }
+
+            getDatabase() {
+                try {
+                    const data = localStorage.getItem(this.STORAGE_KEY);
+                    return data ? JSON.parse(data) : null;
+                } catch (error) {
+                    console.error("Error reading database:", error);
+                    return null;
+                }
+            }
+
+            saveDatabase(data) {
+                try {
+                    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+                    return true;
+                } catch (error) {
+                    console.error("Error saving database:", error);
+                    return false;
+                }
+            }
+
+            // User methods
+            async findUserByEmail(email) {
+                const db = this.getDatabase();
+                return db ? db.users.find(u => u.email === email) : null;
+            }
+
+            async createUser(userData) {
+                const db = this.getDatabase();
+                if (!db) return null;
+
+                const newUserId = db.users.length > 0 ? Math.max(...db.users.map(u => u.id)) + 1 : 1;
+                
+                const newUser = {
+                    id: newUserId,
+                    ...userData,
+                    role: 'user',
+                    createdAt: new Date().toISOString()
+                };
+                
+                db.users.push(newUser);
+                this.saveDatabase(db);
+                return newUser;
+            }
+
+            async getUser(id) {
+                const db = this.getDatabase();
+                if (!db) return null;
+                const user = db.users.find(u => u.id === id);
+                return user ? { ...user } : null;
+            }
+
+            async getAllUsers() {
+                const db = this.getDatabase();
+                return db ? db.users.map(user => ({ ...user })) : [];
+            }
+
+            // Pitch methods
+            async getAllPitches() {
+                const db = this.getDatabase();
+                return db ? db.pitches.map(pitch => ({ ...pitch })) : [];
+            }
+
+            async getPitch(id) {
+                const db = this.getDatabase();
+                if (!db) return null;
+                const pitch = db.pitches.find(p => p.id === id);
+                return pitch ? { ...pitch } : null;
+            }
+
+            // Booking methods
+            async createBooking(bookingData) {
+                const db = this.getDatabase();
+                if (!db) return null;
+
+                const newBookingId = db.bookings.length > 0 ? Math.max(...db.bookings.map(b => b.id)) + 1 : 1;
+                
+                const newBooking = {
+                    id: newBookingId,
+                    ...bookingData,
+                    createdAt: new Date().toISOString()
+                };
+                
+                db.bookings.push(newBooking);
+                
+                // Update pitch booked slots
+                const pitch = db.pitches.find(p => p.id === bookingData.pitchId);
+                if (pitch) {
+                    const dateStr = bookingData.date;
+                    const startHour = parseInt(bookingData.startTime.split(':')[0]);
+                    const slot = `${startHour}-${startHour + bookingData.duration}`;
+                    
+                    if (!pitch.bookedSlots[dateStr]) {
+                        pitch.bookedSlots[dateStr] = [];
+                    }
+                    pitch.bookedSlots[dateStr].push(slot);
+                }
+                
+                this.saveDatabase(db);
+                return newBooking;
+            }
+
+            async getBookingsByUserId(userId) {
+                const db = this.getDatabase();
+                return db ? db.bookings.filter(b => b.userId === userId) : [];
+            }
+
+            async getAllBookings() {
+                const db = this.getDatabase();
+                return db ? db.bookings.map(booking => ({ ...booking })) : [];
+            }
+
+            async updateBooking(id, updates) {
+                const db = this.getDatabase();
+                if (!db) return false;
+
+                const bookingIndex = db.bookings.findIndex(b => b.id === id);
+                if (bookingIndex === -1) return false;
+
+                db.bookings[bookingIndex] = { ...db.bookings[bookingIndex], ...updates };
+                
+                // Jika dibatalkan, hapus booked slots
+                if (updates.bookingStatus === 'cancelled') {
+                    const booking = db.bookings[bookingIndex];
+                    const pitch = db.pitches.find(p => p.id === booking.pitchId);
+                    if (pitch && pitch.bookedSlots[booking.date]) {
+                        const startHour = parseInt(booking.startTime.split(':')[0]);
+                        const slotToRemove = `${startHour}-${startHour + booking.duration}`;
+                        pitch.bookedSlots[booking.date] = pitch.bookedSlots[booking.date].filter(s => s !== slotToRemove);
+                    }
+                }
+                
+                return this.saveDatabase(db);
+            }
+
+            // Statistics
+            async getStatistics() {
+                const db = this.getDatabase();
+                if (!db) return {
+                    totalUsers: 0,
+                    totalBookings: 0,
+                    todayBookings: 0,
+                    activeBookings: 0,
+                    totalRevenue: 0,
+                    todayRevenue: 0
+                };
+
+                const today = new Date().toISOString().split('T')[0];
+                
+                return {
+                    totalUsers: db.users.length,
+                    totalBookings: db.bookings.length,
+                    todayBookings: db.bookings.filter(b => b.date === today).length,
+                    activeBookings: db.bookings.filter(b => 
+                        b.bookingStatus === 'confirmed' || b.bookingStatus === 'pending'
+                    ).length,
+                    totalRevenue: db.bookings
+                        .filter(b => b.paymentStatus === 'paid')
+                        .reduce((sum, b) => sum + b.totalPrice, 0),
+                    todayRevenue: db.bookings
+                        .filter(b => b.date === today && b.paymentStatus === 'paid')
+                        .reduce((sum, b) => sum + b.totalPrice, 0)
+                };
+            }
+        }
+
+        // ==================== APLIKASI UTAMA ====================
+        class FutsalBookingApp {
+            constructor() {
+                this.db = new Database();
+                this.currentUser = null;
+                this.pitches = [];
+                this.init();
+            }
+
+            async init() {
+                this.setupEventListeners();
+                this.setDefaultDate();
+                this.setupPaymentMethods();
+                
+                // Cek login status
+                const savedUser = localStorage.getItem('currentUser');
+                if (savedUser) {
+                    try {
+                        this.currentUser = JSON.parse(savedUser);
+                        await this.loadPitches();
+                        this.updateUI();
+                    } catch (error) {
+                        console.error("Error loading user:", error);
+                        this.logout();
+                    }
+                } else {
+                    this.updateUI();
+                }
+            }
+
+            setupEventListeners() {
+                // Navigation
+                document.getElementById('nav-home').addEventListener('click', () => {
+                    if (this.currentUser) {
+                        this.showSection('home-section');
+                        this.loadHomeData();
+                    }
+                });
+                
+                document.getElementById('nav-pitches').addEventListener('click', () => {
+                    if (this.currentUser) {
+                        this.showSection('pitches-section');
+                        this.loadAllPitches();
+                    }
+                });
+                
+                document.getElementById('nav-bookings').addEventListener('click', () => {
+                    if (this.currentUser) {
+                        this.showUserBookings();
+                        this.showSection('bookings-section');
+                    }
+                });
+                
+                document.getElementById('nav-new-booking').addEventListener('click', () => {
+                    if (this.currentUser) {
+                        this.showSection('new-booking-section');
+                        this.initBookingForm();
+                    }
+                });
+                
+                document.getElementById('nav-admin').addEventListener('click', async () => {
+                    if (this.currentUser && this.currentUser.role === 'admin') {
+                        await this.showAdminPanel();
+                        this.showSection('admin-section');
+                    }
+                });
+
+                // Auth buttons
+                document.getElementById('btn-login').addEventListener('click', () => this.showLogin());
+                document.getElementById('btn-logout').addEventListener('click', () => this.logout());
+                document.getElementById('btn-show-register').addEventListener('click', () => this.showRegister());
+                document.getElementById('btn-show-login').addEventListener('click', () => this.showLogin());
+                document.getElementById('btn-new-booking').addEventListener('click', () => {
+                    if (this.currentUser) {
+                        this.showSection('new-booking-section');
+                        this.initBookingForm();
+                    }
+                });
+                document.getElementById('btn-quick-booking').addEventListener('click', () => {
+                    if (this.currentUser) {
+                        this.showSection('new-booking-section');
+                        this.initBookingForm();
+                    }
+                });
+
+                // Forms
+                document.getElementById('login-form').addEventListener('submit', (e) => this.handleLogin(e));
+                document.getElementById('register-form').addEventListener('submit', (e) => this.handleRegister(e));
+                document.getElementById('booking-form').addEventListener('submit', (e) => this.handleBooking(e));
+
+                // Booking form events
+                document.getElementById('booking-pitch').addEventListener('change', () => this.updateTimeSlots());
+                document.getElementById('booking-date').addEventListener('change', () => this.updateTimeSlots());
+                document.getElementById('booking-duration').addEventListener('change', () => {
+                    this.updateTimeSlots();
+                    this.updateTotalPrice();
+                });
+            }
+
+            setupPaymentMethods() {
+                const paymentMethods = document.querySelectorAll('.payment-method');
+                paymentMethods.forEach(method => {
+                    method.addEventListener('click', () => {
+                        paymentMethods.forEach(m => m.classList.remove('selected'));
+                        method.classList.add('selected');
+                        document.getElementById('payment-method').value = method.dataset.method;
+                    });
+                });
+            }
+
+            setDefaultDate() {
+                const dateInput = document.getElementById('booking-date');
+                if (dateInput) {
+                    const today = new Date();
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    
+                    const todayStr = today.toISOString().split('T')[0];
+                    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+                    
+                    dateInput.min = todayStr;
+                    dateInput.value = tomorrowStr;
+                }
+            }
+
+            async loadPitches() {
+                try {
+                    this.pitches = await this.db.getAllPitches();
+                } catch (error) {
+                    console.error("Error loading pitches:", error);
+                }
+            }
+
+            async loadHomeData() {
+                await this.loadPitches();
+                this.renderAvailablePitches();
+                await this.loadRecentBookings();
+            }
+
+            showSection(sectionId) {
+                // Sembunyikan semua section
+                ['home-section', 'pitches-section', 'bookings-section', 'new-booking-section', 'admin-section'].forEach(id => {
+                    document.getElementById(id).classList.add('hidden');
+                });
+
+                // Sembunyikan auth sections
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('register-section').classList.add('hidden');
+
+                // Tampilkan main content
+                document.getElementById('main-content').classList.remove('hidden');
+
+                // Tampilkan section target
+                document.getElementById(sectionId).classList.remove('hidden');
+
+                // Update active menu
+                this.updateActiveMenu(sectionId);
+            }
+
+            updateActiveMenu(sectionId) {
+                document.querySelectorAll('.nav-menu li').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                let menuItem;
+                switch(sectionId) {
+                    case 'home-section': menuItem = document.getElementById('nav-home'); break;
+                    case 'pitches-section': menuItem = document.getElementById('nav-pitches'); break;
+                    case 'bookings-section': menuItem = document.getElementById('nav-bookings'); break;
+                    case 'new-booking-section': menuItem = document.getElementById('nav-new-booking'); break;
+                    case 'admin-section': menuItem = document.getElementById('nav-admin'); break;
+                    case 'login': menuItem = document.getElementById('nav-home'); break;
+                    case 'register': menuItem = document.getElementById('nav-home'); break;
+                }
+
+                if (menuItem) menuItem.classList.add('active');
+            }
+
+            showLogin() {
+                document.getElementById('login-section').classList.remove('hidden');
+                document.getElementById('register-section').classList.add('hidden');
+                document.getElementById('main-content').classList.add('hidden');
+                document.getElementById('login-form').reset();
+                this.updateActiveMenu('login');
+            }
+
+            showRegister() {
+                document.getElementById('register-section').classList.remove('hidden');
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('main-content').classList.add('hidden');
+                document.getElementById('register-form').reset();
+                this.updateActiveMenu('register');
+            }
+
+            updateUI() {
+                if (this.currentUser) {
+                    document.getElementById('main-content').classList.remove('hidden');
+                    document.getElementById('login-section').classList.add('hidden');
+                    document.getElementById('register-section').classList.add('hidden');
+                    document.getElementById('btn-login').classList.add('hidden');
+                    document.getElementById('btn-logout').classList.remove('hidden');
+
+                    // Update user info
+                    document.getElementById('user-display-name').textContent = this.currentUser.name;
+                    document.getElementById('user-display-email').textContent = this.currentUser.email;
+                    document.getElementById('user-display-phone').textContent = this.currentUser.phone;
+
+                    // Tampilkan badge role
+                    const roleBadge = document.getElementById('user-role-badge');
+                    if (this.currentUser.role === 'admin') {
+                        roleBadge.textContent = 'ADMIN';
+                        roleBadge.className = 'status confirmed';
+                        roleBadge.classList.remove('hidden');
+                        document.getElementById('nav-admin').classList.remove('hidden');
+                    } else {
+                        roleBadge.classList.add('hidden');
+                        document.getElementById('nav-admin').classList.add('hidden');
+                    }
+
+                    this.showSection('home-section');
+                    this.loadHomeData();
+                } else {
+                    document.getElementById('main-content').classList.add('hidden');
+                    document.getElementById('btn-login').classList.remove('hidden');
+                    document.getElementById('btn-logout').classList.add('hidden');
+                    this.showLogin();
+                }
+            }
+
+            async handleLogin(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-password').value;
+
+                if (!email || !password) {
+                    this.showMessage('login-message', 'Harap isi semua field', 'error');
+                    return;
+                }
+
+                try {
+                    const user = await this.db.findUserByEmail(email);
+                    
+                    if (!user) {
+                        this.showMessage('login-message', 'Email tidak terdaftar', 'error');
+                        return;
+                    }
+
+                    if (user.password !== password) {
+                        this.showMessage('login-message', 'Password salah', 'error');
+                        return;
+                    }
+
+                    // Login berhasil
+                    this.currentUser = { 
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        phone: user.phone,
+                        role: user.role
+                    };
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+                    
+                    this.showMessage('login-message', 'Login berhasil!', 'success');
+                    document.getElementById('login-form').reset();
+                    
+                    // Update UI dan load data
+                    await this.loadPitches();
+                    this.updateUI();
+                    
+                } catch (error) {
+                    this.showMessage('login-message', 'Terjadi kesalahan', 'error');
+                }
+            }
+
+            async handleRegister(e) {
+                e.preventDefault();
+                const name = document.getElementById('register-name').value.trim();
+                const email = document.getElementById('register-email').value.trim();
+                const phone = document.getElementById('register-phone').value.trim();
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+
+                // Validasi
+                if (!name || !email || !phone || !password || !confirmPassword) {
+                    this.showMessage('register-message', 'Harap isi semua field', 'error');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    this.showMessage('register-message', 'Password minimal 6 karakter', 'error');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    this.showMessage('register-message', 'Password tidak cocok', 'error');
+                    return;
+                }
+
+                try {
+                    // Cek email sudah terdaftar
+                    const existingUser = await this.db.findUserByEmail(email);
+                    if (existingUser) {
+                        this.showMessage('register-message', 'Email sudah terdaftar', 'error');
+                        return;
+                    }
+
+                    const newUser = await this.db.createUser({
+                        name,
+                        email,
+                        phone,
+                        password // Dalam produksi, hash dulu
+                    });
+
+                    if (newUser) {
+                        this.showMessage('register-message', 'Registrasi berhasil! Silakan login.', 'success');
+                        document.getElementById('register-form').reset();
+                        
+                        setTimeout(() => this.showLogin(), 1500);
+                    }
+                } catch (error) {
+                    this.showMessage('register-message', 'Terjadi kesalahan', 'error');
+                }
+            }
+
+            async handleBooking(e) {
+                e.preventDefault();
+
+                if (!this.currentUser) {
+                    this.showMessage('booking-message', 'Anda harus login terlebih dahulu', 'error');
+                    return;
+                }
+
+                const pitchId = parseInt(document.getElementById('booking-pitch').value);
+                const date = document.getElementById('booking-date').value;
+                const duration = parseInt(document.getElementById('booking-duration').value);
+                const paymentMethod = document.getElementById('payment-method').value;
+                const selectedTimeSlot = document.querySelector('.time-slot.selected');
+
+                // Validasi
+                if (!pitchId) {
+                    this.showMessage('booking-message', 'Pilih lapangan terlebih dahulu', 'error');
+                    return;
+                }
+
+                if (!selectedTimeSlot) {
+                    this.showMessage('booking-message', 'Pilih waktu terlebih dahulu', 'error');
+                    return;
+                }
+
+                if (!paymentMethod) {
+                    this.showMessage('booking-message', 'Pilih metode pembayaran', 'error');
+                    return;
+                }
+
+                const time = selectedTimeSlot.dataset.time;
+                const pitch = this.pitches.find(p => p.id === pitchId);
+
+                if (!pitch) {
+                    this.showMessage('booking-message', 'Lapangan tidak ditemukan', 'error');
+                    return;
+                }
+
+                // Cek ketersediaan
+                const startHour = parseInt(time.split(':')[0]);
+                const dateStr = date;
+                
+                if (pitch.bookedSlots[dateStr]) {
+                    for (const slot of pitch.bookedSlots[dateStr]) {
+                        const [slotStart, slotEnd] = slot.split('-').map(Number);
+                        if (startHour >= slotStart && startHour < slotEnd) {
+                            this.showMessage('booking-message', 'Waktu sudah dibooking', 'error');
+                            return;
+                        }
+                        if ((startHour + duration) > slotStart && (startHour + duration) <= slotEnd) {
+                            this.showMessage('booking-message', 'Waktu bertabrakan', 'error');
+                            return;
+                        }
+                    }
+                }
+
+                const totalPrice = pitch.pricePerHour * duration;
+
+                try {
+                    const booking = await this.db.createBooking({
+                        userId: this.currentUser.id,
+                        userName: this.currentUser.name,
+                        pitchId,
+                        pitchName: pitch.name,
+                        date: dateStr,
+                        startTime: time,
+                        duration,
+                        totalPrice,
+                        paymentMethod,
+                        paymentStatus: 'pending',
+                        bookingStatus: 'pending'
+                    });
+
+                    this.showMessage('booking-message', 
+                        `Booking berhasil! ID: ${booking.id}. Total: Rp ${totalPrice.toLocaleString()}`,
+                        'success'
+                    );
+                    
+                    // Reset form
+                    document.getElementById('booking-form').reset();
+                    this.setDefaultDate();
+                    this.initBookingForm();
+                    
+                    // Refresh data
+                    await this.loadRecentBookings();
+                    await this.showUserBookings();
+                    this.renderAvailablePitches();
+                    
+                    setTimeout(() => {
+                        this.showSection('bookings-section');
+                        this.showUserBookings();
+                    }, 2000);
+                    
+                } catch (error) {
+                    this.showMessage('booking-message', 'Gagal membuat booking', 'error');
+                }
+            }
+
+            logout() {
+                this.currentUser = null;
+                localStorage.removeItem('currentUser');
+                this.updateUI();
+                this.showMessage('login-message', 'Logout berhasil', 'success');
+            }
+
+            // RENDER METHODS
+            renderAvailablePitches() {
+                const container = document.getElementById('available-pitches');
+                if (!container) return;
+
+                container.innerHTML = '';
+                
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowStr = tomorrow.toISOString().split('T')[0];
+                
+                const availablePitches = this.pitches.filter(pitch => {
+                    // Cek apakah ada slot tersedia besok jam 14:00-16:00
+                    if (!pitch.bookedSlots[tomorrowStr]) return true;
+                    
+                    const hasConflict = pitch.bookedSlots[tomorrowStr].some(slot => {
+                        const [start, end] = slot.split('-').map(Number);
+                        return start <= 14 && end > 14;
+                    });
+                    
+                    return !hasConflict;
+                });
+                
+                if (availablePitches.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 30px; color: #666; grid-column: 1/-1;">
+                            <p>Tidak ada lapangan tersedia untuk besok</p>
+                            <p class="mt-20">Coba pilih tanggal lain di menu Booking Baru</p>
+                        </div>`;
+                    return;
+                }
+                
+                availablePitches.slice(0, 4).forEach(pitch => {
+                    const card = this.createPitchCard(pitch);
+                    container.appendChild(card);
+                });
+            }
+
+            async loadAllPitches() {
+                const container = document.getElementById('all-pitches');
+                if (!container) return;
+
+                container.innerHTML = '';
+                
+                if (this.pitches.length === 0) {
+                    await this.loadPitches();
+                }
+                
+                this.pitches.forEach(pitch => {
+                    const card = this.createPitchCard(pitch);
+                    container.appendChild(card);
+                });
+            }
+
+            createPitchCard(pitch) {
+                const card = document.createElement('div');
+                card.className = 'pitch-card';
+                card.innerHTML = `
+                    <div class="pitch-image">
+                        ${pitch.name}
+                    </div>
+                    <div class="pitch-info">
+                        <h3>${pitch.name}</h3>
+                        <p>${pitch.description}</p>
+                        <p><strong>Tipe:</strong> ${pitch.type}</p>
+                        <p><strong>Fasilitas:</strong> ${pitch.facilities.join(', ')}</p>
+                        <div class="price">Rp ${pitch.pricePerHour.toLocaleString()}/jam</div>
+                        <button class="btn btn-primary book-pitch-btn" data-id="${pitch.id}">
+                            Booking Sekarang
+                        </button>
+                    </div>
+                `;
+                
+                card.querySelector('.book-pitch-btn').addEventListener('click', () => {
+                    this.showSection('new-booking-section');
+                    document.getElementById('booking-pitch').value = pitch.id;
+                    setTimeout(() => this.updateTimeSlots(), 100);
+                });
+                
+                return card;
+            }
+
+            async loadRecentBookings() {
+                const container = document.getElementById('recent-bookings');
+                if (!container || !this.currentUser) return;
+
+                try {
+                    const bookings = await this.db.getBookingsByUserId(this.currentUser.id);
+                    const recentBookings = bookings
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                        .slice(0, 3);
+                    
+                    this.renderBookings(recentBookings, container);
+                } catch (error) {
+                    console.error("Error loading recent bookings:", error);
+                }
+            }
+
+            async showUserBookings() {
+                const container = document.getElementById('user-bookings');
+                if (!container || !this.currentUser) return;
+
+                try {
+                    const bookings = await this.db.getBookingsByUserId(this.currentUser.id);
+                    this.renderUserBookingsList(bookings, container);
+                } catch (error) {
+                    console.error("Error loading user bookings:", error);
+                }
+            }
+
+            renderBookings(bookings, container) {
+                container.innerHTML = '';
+                
+                if (bookings.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 30px; color: #666; grid-column: 1/-1;">
+                            <p>Belum ada booking</p>
+                            <p class="mt-20">Mulai booking lapangan favorit Anda!</p>
+                        </div>`;
+                    return;
+                }
+                
+                bookings.forEach(booking => {
+                    const card = document.createElement('div');
+                    card.className = 'booking-card';
+                    card.innerHTML = `
+                        <h3>${booking.pitchName}</h3>
+                        <p><strong>Tanggal:</strong> ${booking.date}</p>
+                        <p><strong>Waktu:</strong> ${booking.startTime}</p>
+                        <p><strong>Total:</strong> Rp ${booking.totalPrice.toLocaleString()}</p>
+                        <span class="status ${booking.bookingStatus}">
+                            ${this.getBookingStatusText(booking.bookingStatus)}
+                        </span>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            renderUserBookingsList(bookings, container) {
+                container.innerHTML = '';
+                
+                if (bookings.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 30px; color: #666; grid-column: 1/-1;">
+                            <h4>Belum ada booking</h4>
+                            <p class="mt-20">Silakan buat booking pertama Anda!</p>
+                            <button class="btn btn-primary mt-20" onclick="app.showSection('new-booking-section')">
+                                Buat Booking
+                            </button>
+                        </div>`;
+                    return;
+                }
+                
+                bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                       .forEach(booking => {
+                    const card = document.createElement('div');
+                    card.className = 'booking-card';
+                    card.innerHTML = `
+                        <h3>${booking.pitchName}</h3>
+                        <p><strong>Tanggal:</strong> ${booking.date}</p>
+                        <p><strong>Waktu:</strong> ${booking.startTime} (${booking.duration} jam)</p>
+                        <p><strong>Total:</strong> Rp ${booking.totalPrice.toLocaleString()}</p>
+                        <p><strong>Pembayaran:</strong> ${this.getPaymentMethodText(booking.paymentMethod)}</p>
+                        <p><strong>Status:</strong> 
+                            <span class="status ${booking.bookingStatus}">
+                                ${this.getBookingStatusText(booking.bookingStatus)}
+                            </span>
+                        </p>
+                        <p><strong>Bayar:</strong> 
+                            <span class="status ${booking.paymentStatus}">
+                                ${this.getPaymentStatusText(booking.paymentStatus)}
+                            </span>
+                        </p>
+                        <p><strong>ID:</strong> ${booking.id}</p>
+                        ${booking.paymentStatus !== 'paid' && booking.bookingStatus !== 'cancelled' ? 
+                            `<div class="mt-20">
+                                <button class="btn btn-success btn-sm" onclick="app.showPaymentInstructions(${booking.id})">
+                                    💳 Bayar
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="app.cancelUserBooking(${booking.id})">
+                                    ❌ Batalkan
+                                </button>
+                            </div>` : ''
+                        }
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            // ADMIN METHODS
+            async showAdminPanel() {
+                try {
+                    const [stats, bookings, users] = await Promise.all([
+                        this.db.getStatistics(),
+                        this.db.getAllBookings(),
+                        this.db.getAllUsers()
+                    ]);
+
+                    this.renderAdminStats(stats);
+                    this.renderAllBookingsTable(bookings);
+                    this.renderAllUsersTable(users);
+                } catch (error) {
+                    console.error("Error loading admin data:", error);
+                }
+            }
+
+            renderAdminStats(stats) {
+                document.getElementById('total-bookings').textContent = stats.totalBookings;
+                document.getElementById('today-revenue').textContent = `Rp ${stats.todayRevenue.toLocaleString()}`;
+                document.getElementById('active-bookings').textContent = stats.activeBookings;
+                document.getElementById('total-users').textContent = stats.totalUsers;
+            }
+
+            renderAllBookingsTable(bookings) {
+                const tbody = document.querySelector('#all-bookings-table tbody');
+                if (!tbody) return;
+
+                tbody.innerHTML = '';
+
+                bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                    .forEach(booking => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${booking.id}</td>
+                            <td>${booking.userName}</td>
+                            <td>${booking.pitchName}</td>
+                            <td>${booking.date}</td>
+                            <td>${booking.startTime}</td>
+                            <td>${booking.duration} jam</td>
+                            <td>Rp ${booking.totalPrice.toLocaleString()}</td>
+                            <td>
+                                <span class="status ${booking.bookingStatus}">
+                                    ${this.getBookingStatusText(booking.bookingStatus)}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status ${booking.paymentStatus}">
+                                    ${this.getPaymentStatusText(booking.paymentStatus)}
+                                </span>
+                                <br>
+                                <small>${this.getPaymentMethodText(booking.paymentMethod)}</small>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                    ${booking.paymentStatus !== 'paid' ? 
+                                        `<button class="btn btn-success btn-sm" onclick="app.markAsPaid(${booking.id})">
+                                            Bayar
+                                        </button>` : ''
+                                    }
+                                    ${booking.bookingStatus === 'confirmed' ? 
+                                        `<button class="btn btn-warning btn-sm" onclick="app.completeBooking(${booking.id})">
+                                            Selesai
+                                        </button>` : ''
+                                    }
+                                    ${(booking.bookingStatus === 'pending' || booking.bookingStatus === 'confirmed') ? 
+                                        `<button class="btn btn-danger btn-sm" onclick="app.cancelBookingAdmin(${booking.id})">
+                                            Batalkan
+                                        </button>` : ''
+                                    }
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+            }
+
+            renderAllUsersTable(users) {
+                const tbody = document.querySelector('#all-users-table tbody');
+                if (!tbody) return;
+
+                tbody.innerHTML = '';
+
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.id}</td>
+                        <td>${user.name} ${user.role === 'admin' ? '👑' : ''}</td>
+                        <td>${user.email}</td>
+                        <td>${user.phone}</td>
+                        <td>${user.role}</td>
+                        <td>0</td>
+                        <td>${new Date(user.createdAt).toLocaleDateString('id-ID')}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            async markAsPaid(bookingId) {
+                if (confirm('Tandai booking sebagai sudah dibayar?')) {
+                    try {
+                        await this.db.updateBooking(bookingId, {
+                            paymentStatus: 'paid',
+                            bookingStatus: 'confirmed'
+                        });
+                        
+                        await this.showAdminPanel();
+                        this.showMessage('admin-message', `Booking #${bookingId} sudah dibayar`, 'success');
+                    } catch (error) {
+                        this.showMessage('admin-message', 'Gagal mengupdate', 'error');
+                    }
+                }
+            }
+
+            async completeBooking(bookingId) {
+                if (confirm('Tandai booking sebagai selesai?')) {
+                    try {
+                        await this.db.updateBooking(bookingId, {
+                            bookingStatus: 'completed'
+                        });
+                        
+                        await this.showAdminPanel();
+                        this.showMessage('admin-message', `Booking #${bookingId} selesai`, 'success');
+                    } catch (error) {
+                        this.showMessage('admin-message', 'Gagal mengupdate', 'error');
+                    }
+                }
+            }
+
+            async cancelBookingAdmin(bookingId) {
+                if (confirm('Batalkan booking ini?')) {
+                    try {
+                        await this.db.updateBooking(bookingId, {
+                            bookingStatus: 'cancelled',
+                            paymentStatus: 'failed'
+                        });
+                        
+                        await this.showAdminPanel();
+                        this.showMessage('admin-message', `Booking #${bookingId} dibatalkan`, 'success');
+                    } catch (error) {
+                        this.showMessage('admin-message', 'Gagal membatalkan', 'error');
+                    }
+                }
+            }
+
+            async cancelUserBooking(bookingId) {
+                if (confirm('Batalkan booking ini?')) {
+                    try {
+                        await this.db.updateBooking(bookingId, {
+                            bookingStatus: 'cancelled'
+                        });
+                        
+                        await this.showUserBookings();
+                        this.showMessage('bookings-message', 'Booking dibatalkan', 'success');
+                    } catch (error) {
+                        this.showMessage('bookings-message', 'Gagal membatalkan', 'error');
+                    }
+                }
+            }
+
+            showPaymentInstructions(bookingId) {
+                alert(`Instruksi Pembayaran Booking #${bookingId}:\n\n1. Transfer ke BCA: 1234567890\n2. Jumlah: Lihat di detail booking\n3. Keterangan: Booking ${bookingId}\n4. Konfirmasi ke wa admin setelah transfer(081243567657)`);
+            }
+
+            // BOOKING FORM METHODS
+            initBookingForm() {
+                this.loadPitchOptions();
+                this.updateTimeSlots();
+                this.updateTotalPrice();
+                
+                // Reset payment selection
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+                document.getElementById('payment-method').value = '';
+            }
+
+            loadPitchOptions() {
+                const select = document.getElementById('booking-pitch');
+                if (!select) return;
+
+                select.innerHTML = '<option value="">-- Pilih Lapangan --</option>';
+                
+                this.pitches.forEach(pitch => {
+                    const option = document.createElement('option');
+                    option.value = pitch.id;
+                    option.textContent = `${pitch.name} (${pitch.type}) - Rp ${pitch.pricePerHour.toLocaleString()}/jam`;
+                    select.appendChild(option);
+                });
+            }
+
+            updateTimeSlots() {
+                const pitchId = document.getElementById('booking-pitch').value;
+                const date = document.getElementById('booking-date').value;
+                const duration = parseInt(document.getElementById('booking-duration').value);
+                const timeSlotsContainer = document.getElementById('time-slots');
+                
+                if (!timeSlotsContainer) return;
+
+                timeSlotsContainer.innerHTML = '';
+                
+                if (!pitchId || !date) {
+                    timeSlotsContainer.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666;">
+                            Pilih lapangan dan tanggal terlebih dahulu
+                        </div>`;
+                    return;
+                }
+                
+                const pitch = this.pitches.find(p => p.id === parseInt(pitchId));
+                if (!pitch) return;
+                
+                // Cek booked slots
+                const bookedSlots = pitch.bookedSlots[date] || [];
+                const availableSlots = [];
+                
+                // Generate slots 8:00 - 22:00
+                for (let hour = 8; hour <= 22 - duration; hour++) {
+                    let isAvailable = true;
+                    
+                    // Cek konflik dengan booked slots
+                    for (const bookedSlot of bookedSlots) {
+                        const [start, end] = bookedSlot.split('-').map(Number);
+                        if (hour >= start && hour < end) {
+                            isAvailable = false;
+                            break;
+                        }
+                        if ((hour + duration) > start && (hour + duration) <= end) {
+                            isAvailable = false;
+                            break;
+                        }
+                        if (hour <= start && (hour + duration) >= end) {
+                            isAvailable = false;
+                            break;
+                        }
+                    }
+                    
+                    if (isAvailable) {
+                        availableSlots.push(`${hour.toString().padStart(2, '0')}:00`);
+                    }
+                }
+                
+                if (availableSlots.length === 0) {
+                    timeSlotsContainer.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #666;">
+                            Tidak ada slot tersedia untuk tanggal ini
+                        </div>`;
+                    return;
+                }
+                
+                // Render semua slot
+                for (let hour = 8; hour <= 22 - duration; hour++) {
+                    const time = `${hour.toString().padStart(2, '0')}:00`;
+                    const slotDiv = document.createElement('div');
+                    slotDiv.className = 'time-slot';
+                    slotDiv.dataset.time = time;
+                    slotDiv.textContent = time;
+                    
+                    if (availableSlots.includes(time)) {
+                        slotDiv.classList.add('available');
+                        slotDiv.title = 'Tersedia';
+                        
+                        slotDiv.addEventListener('click', () => {
+                            document.querySelectorAll('.time-slot').forEach(s => {
+                                s.classList.remove('selected');
+                            });
+                            
+                            slotDiv.classList.add('selected');
+                            this.updateTotalPrice();
+                        });
+                    } else {
+                        slotDiv.classList.add('booked');
+                        slotDiv.title = 'Sudah dibooking';
+                        slotDiv.style.cursor = 'not-allowed';
+                        slotDiv.style.opacity = '0.6';
+                    }
+                    
+                    timeSlotsContainer.appendChild(slotDiv);
+                }
+                
+                this.updateTotalPrice();
+            }
+
+            updateTotalPrice() {
+                const pitchId = document.getElementById('booking-pitch').value;
+                const duration = parseInt(document.getElementById('booking-duration').value);
+                
+                const totalElement = document.getElementById('booking-total');
+                if (!totalElement) return;
+
+                if (!pitchId) {
+                    totalElement.value = 'Rp 0';
+                    return;
+                }
+                
+                const pitch = this.pitches.find(p => p.id === parseInt(pitchId));
+                if (!pitch) return;
+                
+                const totalPrice = pitch.pricePerHour * duration;
+                totalElement.value = `Rp ${totalPrice.toLocaleString()}`;
+            }
+
+            // UTILITY METHODS
+            showMessage(elementId, message, type = 'success') {
+                const element = document.getElementById(elementId);
+                if (!element) return;
+
+                element.textContent = message;
+                element.className = `alert alert-${type}`;
+                element.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    element.classList.add('hidden');
+                }, 4000);
+            }
+
+            getBookingStatusText(status) {
+                const statusMap = {
+                    'pending': 'Menunggu',
+                    'confirmed': 'Dikonfirmasi',
+                    'completed': 'Selesai',
+                    'cancelled': 'Dibatalkan'
+                };
+                return statusMap[status] || status;
+            }
+
+            getPaymentStatusText(status) {
+                const statusMap = {
+                    'pending': 'Belum Bayar',
+                    'paid': 'Lunas',
+                    'failed': 'Gagal'
+                };
+                return statusMap[status] || status;
+            }
+
+            getPaymentMethodText(method) {
+                const methodMap = {
+                    'cash': 'Cash',
+                    'transfer': 'Transfer',
+                    'qris': 'QRIS'
+                };
+                return methodMap[method] || method;
+            }
+        }
+
+        // ==================== INISIALISASI APLIKASI ====================
+        // Inisialisasi saat halaman siap
+        document.addEventListener('DOMContentLoaded', function() {
+            window.app = new FutsalBookingApp();
+        });
+    </script>
+</body>
+</html>
